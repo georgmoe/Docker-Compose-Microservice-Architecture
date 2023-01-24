@@ -1,0 +1,53 @@
+version: "3.8"
+services:
+  db:
+    image: postgres:15.1-alpine3.17
+    environment:
+      - POSTGRES_USER=$DB_USER
+      - POSTGRES_PASSWORD=$DB_PASSWORD
+    expose:
+      - $DB_PORT
+    volumes:
+      - ./db/data:/var/lib/postgresql/data
+    restart: always
+    command: -p $DB_PORT
+  shortener:
+    depends_on:
+      - db
+    build:
+      context: ./shortener
+      dockerfile: Dockerfile.prod
+    environment:
+      - NODE_ENV=$SHORTENER_NODE_ENV
+      - PORT=$SHORTENER_PORT
+      - PGHOST=db
+      - PGPORT=$DB_PORT
+      - PGUSER=$DB_USER
+      - PGPASSWORD=$DB_PASSWORD
+      - PGDATABASE=$DB_NAME
+    expose:
+      - $SHORTENER_PORT
+    volumes:
+      - /app/node_modules
+  ui:
+    build:
+      context: ./ui
+      dockerfile: Dockerfile.prod
+    environment:
+      - NODE_ENV=$UI_NODE_ENV
+      - VITE_APP_API_HOST
+    volumes:
+      - ./ui/dist:/app/dist
+      - /app/node_modules
+  nginx:
+    image: nginx:1.23.3-alpine
+    volumes:
+      - ./ui/dist:/usr/share/nginx/html
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - ./nginx/templates:/etc/nginx/templates
+    environment:
+      - SHORTENER_HOST=shortener
+      - SHORTENER_PORT=$SHORTENER_PORT
+    ports:
+      - 80:80
+    restart: always
