@@ -5,10 +5,8 @@ services:
     environment:
       - POSTGRES_USER=$DB_USER
       - POSTGRES_PASSWORD=$DB_PASSWORD
-    expose:
-      - $DB_PORT
     volumes:
-      - ./db/data:/var/lib/postgresql/data
+      - postgres-data:/var/lib/postgresql/data
     restart: always
     command: -p $DB_PORT
   shortener:
@@ -25,10 +23,6 @@ services:
       - PGUSER=$DB_USER
       - PGPASSWORD=$DB_PASSWORD
       - PGDATABASE=$DB_NAME
-    expose:
-      - $SHORTENER_PORT
-    volumes:
-      - /app/node_modules
   ui:
     build:
       context: ./ui
@@ -38,7 +32,6 @@ services:
       - VITE_APP_API_HOST
     volumes:
       - ./ui/dist:/app/dist
-      - /app/node_modules
   nginx:
     image: nginx:1.23.3-alpine
     volumes:
@@ -51,3 +44,5 @@ services:
     ports:
       - 80:80
     restart: always
+volumes:
+  postgres-data:
