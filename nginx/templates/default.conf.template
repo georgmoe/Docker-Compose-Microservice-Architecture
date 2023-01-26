@@ -7,7 +7,6 @@ server {
     }
 
     location /shortener/ {
-        # proxy_pass http://localhost:5000;
         proxy_pass http://${SHORTENER_HOST}:${SHORTENER_PORT}/;
 
         proxy_set_header        Host $host;
