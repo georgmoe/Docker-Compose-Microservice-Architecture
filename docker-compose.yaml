@@ -25,7 +25,6 @@ services:
     build: ./ui
     environment:
       - NODE_ENV=$UI_NODE_ENV
-      - VITE_APP_API_HOST
     volumes:
       - ./ui/dist:/app/dist
   nginx:
