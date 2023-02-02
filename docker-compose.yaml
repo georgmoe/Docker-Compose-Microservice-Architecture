@@ -12,9 +12,7 @@ services:
   shortener:
     depends_on:
       - db
-    build:
-      context: ./shortener
-      dockerfile: Dockerfile.prod
+    build: ./shortener
     environment:
       - NODE_ENV=$SHORTENER_NODE_ENV
       - PORT=$SHORTENER_PORT
@@ -24,9 +22,7 @@ services:
       - PGPASSWORD=$DB_PASSWORD
       - PGDATABASE=$DB_NAME
   ui:
-    build:
-      context: ./ui
-      dockerfile: Dockerfile.prod
+    build: ./ui
     environment:
       - NODE_ENV=$UI_NODE_ENV
       - VITE_APP_API_HOST
