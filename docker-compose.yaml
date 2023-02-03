@@ -9,6 +9,8 @@ services:
       - postgres-data:/var/lib/postgresql/data
     restart: always
     command: -p $DB_PORT
+    networks:
+      - shortener
   shortener:
     depends_on:
       - db
@@ -21,6 +23,9 @@ services:
       - PGUSER=$DB_USER
       - PGPASSWORD=$DB_PASSWORD
       - PGDATABASE=$DB_NAME
+    networks:
+      - shortener
+      - gateway
   ui:
     build: ./ui
     environment:
@@ -39,5 +44,10 @@ services:
     ports:
       - 80:80
     restart: always
+    networks:
+      - gateway
 volumes:
   postgres-data:
+networks:
+  shortener:
+  gateway:
