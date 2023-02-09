@@ -36,7 +36,6 @@ services:
     image: nginx:1.23.3-alpine
     volumes:
       - ./ui/dist:/usr/share/nginx/html
-      - /var/run/docker.sock:/tmp/docker.sock:ro
       - ./nginx/templates:/etc/nginx/templates
     environment:
       - SHORTENER_HOST=shortener
